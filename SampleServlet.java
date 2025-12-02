@@ -42,7 +42,7 @@ public class SampleServlet extends HttpServlet {
 		//フォワード
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/" + forward);
 		dispatcher.forward(request, response);
-
+System.out.println();
 	}
 
 }
