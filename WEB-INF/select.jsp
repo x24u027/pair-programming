@@ -8,9 +8,11 @@
 
 <style>
     #guide{
-        text-align: center;
         color: rgb(139, 128, 128);
     }
+    body{
+text-align: center;
+}
 </style>
 
 <script>
@@ -38,9 +40,9 @@
         if(index===0){
             document.getElementById("guide").textContent="ゲームを初めてプレイする方向け";
         }else if(index===1){
-            document.getElementById("guide").textContent="漢字検定３級合格を目指している方向け";
+            document.getElementById("guide").textContent="検定３級合格を目指している方向け";
         }else if(index===2){
-            document.getElementById("guide").textContent="ちょっと頭おかしい人向け";
+            document.getElementById("guide").textContent="ちょっと頭おかしな人向け";
         }else if(index===3){
             document.getElementById("guide").textContent="そういうのが好きな人向け";
         }
@@ -55,7 +57,8 @@
 
 </head>
 <body>
-	<h2>Level Select（↑↓ or ←→ で選択 / Enterで決定）</h2>
+	<h1 id=setumei>Level Select</h1>
+	<h3 id=setumei>↑↓ or ←→ で選択 / Enterで決定</h3>
 
 	<form id="form" action="start" method="post">
 		<input type="hidden" name="mode" value="question"> 
@@ -63,8 +66,6 @@
 		<label><input type="radio" name="level" value="normal">Normal</label><br>
 		<label><input type="radio" name="level"value="hard">Hard</label><br>
 		<label><input type="radio" name="level"value="extra">EX</label><br>
-
-		<button>スタート</button>
 	</form>
 <h2 id="guide">ゲームを初めてプレイする方向け</h2>
 </body>
