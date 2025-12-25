@@ -42,7 +42,7 @@ text-align: center;
         }else if(index===1){
             document.getElementById("guide").textContent="検定３級合格を目指している方向け";
         }else if(index===2){
-            document.getElementById("guide").textContent="ちょっと頭おかしな人向け";
+            document.getElementById("guide").textContent="ちょっとおかしな人向け";
         }else if(index===3){
             document.getElementById("guide").textContent="そういうのが好きな人向け";
         }
