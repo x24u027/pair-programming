@@ -62,10 +62,10 @@ text-align: center;
 
 	<form id="form" action="start" method="post">
 		<input type="hidden" name="mode" value="question"> 
-		<label><input type="radio" name="level" value="easy" checked>Easy</label><br>
-		<label><input type="radio" name="level" value="normal">Normal</label><br>
-		<label><input type="radio" name="level"value="hard">Hard</label><br>
-		<label><input type="radio" name="level"value="extra">EX</label><br>
+		<label><input type="radio" name=pause value="easy" checked>Easy</label><br>
+		<label><input type="radio" name="pause" value="normal">Normal</label><br>
+		<label><input type="radio" name="pause"value="hard">Hard</label><br>
+		<label><input type="radio" name="pause"value="extra">EX</label><br>
 	</form>
 <h2 id="guide">ゲームを初めてプレイする方向け</h2>
 </body>

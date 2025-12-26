@@ -7,6 +7,7 @@
     
     List<Question> list = (List<Question>) session.getAttribute("questions");
     int index = (Integer) session.getAttribute("index");
+    String level = (String) session.getAttribute("level");
 %>
 
 <!DOCTYPE html>
@@ -77,10 +78,29 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	            // Enterで送信
 	            if(e.key === "Enter"){
-	                //スタートボタンをクリックしなくてもEnterキー押下でformの要素を送信する
-	                document.getElementById("form").submit();
+	            	const selected = document.querySelector("input[name='pause']:checked").value;
+
+	                if (selected === "continue") {
+	                    // ▼ ポーズ解除
+	                    overlay.style.display = "none";
+	                    menu.style.display = "none";
+
+	                    // ▼ テキスト入力欄へフォーカス復帰
+	                    if (txt) txt.focus();
+	                }
+
+	                if (selected === "restart") {
+	                    // ▼ やりなおす（indexを0にして game に戻す）
+	                	document.getElementById("form").submit();
+	                }
+
+	                if (selected === "back") {
+	                    // ▼ タイトルに戻る
+	                    window.location.href = "start";
+	                }
 	            }
 	        });
+	        
 	    }
 	});
 
@@ -112,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <form id="form" action="start" method="post">
 		<input type="hidden" name="mode" value="question"> 
 		<label><input type="radio" name="pause" value="continue" checked>つづける</label><br>
-		<label><input type="radio" name="pause" value="restart">やりなおす</label><br>
+		<label><input type="radio" name="pause" value="<%= level %>">やりなおす</label><br>
 		<label><input type="radio" name="pause"value="back">タイトルへ戻る</label><br>
 	</form>
 </div>
@@ -120,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <% if (result != null) { %>
 
     <% if (index >= 7) { %>
-    	<h1 id="last">ＳＴＡＧＥ　ＣＬＥＡＲ！！</h1>
+    	<h1 id="last"><%= level %> mode Clear!!</h1>
         <a id="last" href="${pageContext.request.contextPath}/start">タイトルへ戻る</a>
     <% } else { %>
         <script>window.location.href = "game";</script>
