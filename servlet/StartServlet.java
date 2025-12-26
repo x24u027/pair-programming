@@ -27,7 +27,7 @@ public class StartServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String level = request.getParameter("level");
+		String level = request.getParameter("pause");
 
 		QuestionDAO dao = new QuestionDAO();
 		ArrayList<Question> questions = dao.findRandomByLevel(level);
@@ -35,7 +35,8 @@ public class StartServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		session.setAttribute("questions", questions);
 		session.setAttribute("index", 0); // 0番目の問題から開始
-
+		session.setAttribute("level", level); 
 		response.sendRedirect("game");
 	}
 }
+
