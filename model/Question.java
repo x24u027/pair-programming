@@ -5,15 +5,14 @@ public class Question {
 	private String kanji;
 	private String yomi;
 	private String level;
+	private String kai;
 
-	public Question() {
-	}
-
-	public Question(int id, String kanji, String yomi, String level) {
+	public Question(int id, String kanji, String yomi, String level, String kai) {
 		this.id = id;
 		this.kanji = kanji;
 		this.yomi = yomi;
 		this.level = level;
+		this.kai = kai;
 	}
 
 	public int getId() {
@@ -32,19 +31,7 @@ public class Question {
 		return level;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public void setKanji(String kanji) {
-		this.kanji = kanji;
-	}
-
-	public void setYomi(String yomi) {
-		this.yomi = yomi;
-	}
-
-	public void setLevel(String level) {
-		this.level = level;
+	public String getKai() {
+		return kai;
 	}
 }
