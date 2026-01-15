@@ -27,16 +27,18 @@ public class StartServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String level = request.getParameter("pause");
+		String level = request.getParameter("level");
 
 		QuestionDAO dao = new QuestionDAO();
 		ArrayList<Question> questions = dao.findRandomByLevel(level);
 
 		HttpSession session = request.getSession();
 		session.setAttribute("questions", questions);
-		session.setAttribute("index", 0); // 0番目の問題から開始
-		session.setAttribute("level", level); 
+		session.setAttribute("index", 0); 
+		session.setAttribute("level", level);
+		session.setAttribute("time", 17);
+		session.setAttribute("size", 140);
+		session.setAttribute("player", 3);
 		response.sendRedirect("game");
 	}
 }
-

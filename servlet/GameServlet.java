@@ -47,15 +47,30 @@ public class GameServlet extends HttpServlet {
 
 		ArrayList<Question> questions = (ArrayList<Question>) session.getAttribute("questions");
 		Integer index = (Integer) session.getAttribute("index");
+		Integer player = (Integer) session.getAttribute("player");
+
+		String correct = questions.get(index).getYomi();
 
 		String answer = request.getParameter("answer");
-		String correct = questions.get(index).getYomi();
+		String size = request.getParameter("size");
+		String timer = request.getParameter("time");
+
+		int size0 = Integer.parseInt(size);
+		int time0 = Integer.parseInt(timer);
 
 		boolean result = answer != null && answer.equals(correct);
 		request.setAttribute("result", result);
 
-		if (result) {
+		if (result || time0 == 0) {
 			session.setAttribute("index", index + 1);
+			session.setAttribute("size", 140);
+			session.setAttribute("time", 17);
+			if (time0 == 0) {
+				session.setAttribute("player", player - 1);
+			}
+		} else {
+			session.setAttribute("size", size0);
+			session.setAttribute("time", time0 - 1);
 		}
 
 		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/game.jsp");
