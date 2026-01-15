@@ -108,12 +108,36 @@ body {
 	position: relative;
 	z-index: 2;
 }
+
+#flash {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #ff0000; 
+	pointer-events: none;
+	opacity: 0;
+	z-index: 9999;
+	animation: none;
+}
+        
+@keyframes flashAnim {
+	0%   { opacity: 0; }
+	16%  { opacity: 1; }
+	33%  { opacity: 0; }
+	50%  { opacity: 1; }
+	66%  { opacity: 0; }
+	83%  { opacity: 1; }
+	100% { opacity: 0; }
+}
 </style>
 
 </head>
 <body>
 <!--  ポーズメニュー（Escで表示/非表示）  -->
 <div id="overlay"></div>
+<div id="flash"></div>
 
 <div id="pause-menu">
     <h2>PAUSE</h2>
@@ -137,7 +161,7 @@ body {
     	    }
         });
         </script>
-    <% } else if (index >= 7) { %>
+    <% } else if (index + player == 10) { %>
     	<h1 id="last"><%= level %> mode Clear!!</h1>
     	<p>「Enter」キーでタイトルに戻る</p>
         <script>
@@ -166,16 +190,15 @@ body {
 
     <p id="question"><%= q.getKanji() %></p>
 
- <form action="game" method="post" id="textp">
-    <div id="input-wrapper">
-    <span id="underline"></span>
-    <input  type="text"  id="txt" name="answer" autocomplete="off" 
-    autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="latin" autofocus>
-  	</div>
-  	<input type="hidden" name="size" id="size">
-    <input type="hidden" name="time" id="time">
-</form>
-
+ 	<form action="game" method="post" id="textp">
+    	<div id="input-wrapper">
+    	<span id="underline"></span>
+    	<input  type="text"  id="txt" name="answer" autocomplete="off" 
+    	autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="latin" autofocus>
+  		</div>
+  		<input type="hidden" name="size" id="size">
+    	<input type="hidden" name="time" id="time">
+	</form>
     <script>
     
     document.addEventListener("DOMContentLoaded", function() {
@@ -218,8 +241,10 @@ body {
              if (t1 === 1) {
             	clearInterval(timer1);
                 timer1 = null;
+                new Audio("se/ﾋﾟﾁｭｰﾝ.mp3").play();
                 question.style.display = 'none';
                 textp.style.display = 'none';
+                flash3Times();
             }else if(t1 <= 6){
             	time1.style.color = '#ff0000';
                 time2.style.color = '#ff0000';
@@ -306,6 +331,15 @@ body {
 	    document.body.removeChild(temp);
 	});
 
+    function flash3Times() {
+        const f = document.getElementById('flash');
+        f.style.animation = 'flashAnim 0.3s ease';
+    
+        setTimeout(() => {
+            f.style.animation = 'none';
+        }, 300);
+    }
+
     startTimer();
 
     document.addEventListener("keydown", function(e){
@@ -366,8 +400,11 @@ body {
 	        
 	    }else if(e.key === "Enter"){
 	    	new Audio("se/決定.mp3").play();
+	    	e.preventDefault(); 
 	    	stopTimer();
-	    	textp.submit();
+	        setTimeout(() => {
+	        	textp.submit();
+	        }, 200);
     	}else if(e.key === "Backspace"){
     		new Audio("se/戻る.mp3").play();
        	}else{
