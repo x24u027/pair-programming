@@ -15,7 +15,7 @@ public class QuestionDAO {
 	private static final String PASS = "";
 
 	public ArrayList<Question> findRandomByLevel(String level) {
-		String sql = "SELECT * FROM kanjigo WHERE level=? ORDER BY RAND() LIMIT 10";
+		String sql = "SELECT * FROM kanji WHERE level=? ORDER BY RAND() LIMIT 10";
 		ArrayList<Question> list = new ArrayList<>();
 
 		try {
@@ -30,7 +30,8 @@ public class QuestionDAO {
 						rs.getInt("id"),
 						rs.getString("kanji"),
 						rs.getString("yomi"),
-						rs.getString("level")));
+						rs.getString("level"),
+						rs.getString("kai")));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
