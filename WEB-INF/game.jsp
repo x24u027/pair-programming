@@ -238,7 +238,7 @@ body {
         isRunning = true;
 
         timer1 = setInterval(function () {
-             if (t1 === 1) {
+             if (t1 <= 1) {
             	clearInterval(timer1);
                 timer1 = null;
                 new Audio("se/ﾋﾟﾁｭｰﾝ.mp3").play();
