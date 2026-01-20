@@ -3,6 +3,7 @@ package servlet;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -39,6 +40,8 @@ public class StartServlet extends HttpServlet {
 		session.setAttribute("time", 17);
 		session.setAttribute("size", 140);
 		session.setAttribute("player", 3);
-		response.sendRedirect("game");
+		//response.sendRedirect("game");
+		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/game.jsp");
+		rd.forward(request, response);
 	}
 }

@@ -26,14 +26,6 @@ public class GameServlet extends HttpServlet {
 		ArrayList<Question> questions = (ArrayList<Question>) session.getAttribute("questions");
 		Integer index = (Integer) session.getAttribute("index");
 
-		// 7問終わったら最初の画面へ
-		if (index >= 7) {
-			session.removeAttribute("questions");
-			session.removeAttribute("index");
-			response.sendRedirect("select.jsp");
-			return;
-		}
-
 		request.setAttribute("question", questions.get(index));
 
 		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/game.jsp");
