@@ -3,10 +3,9 @@
 <%@ page import="model.Question" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
-    Question q = (Question) request.getAttribute("question");
     Boolean result = (Boolean) request.getAttribute("result");
     
-    List<Question> list = (List<Question>) session.getAttribute("questions");
+    ArrayList<Question> list = (ArrayList<Question>) session.getAttribute("questions");
     int index = (Integer) session.getAttribute("index");
     int player = (Integer) session.getAttribute("player");
     int size = (Integer) session.getAttribute("size");
@@ -50,6 +49,17 @@ body {
 	z-index: 101;
 	text-align: center;
 	width: 300px;
+}
+
+/* ゲームクリアorゲームオーバー画面 */
+#game-clear,#game-over {
+    display:none;
+    text-align:center;
+    font-size:40px;
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
 }
 
 #question {
@@ -136,17 +146,10 @@ body {
 </head>
 <body>
 <!--  ポーズメニュー（Escで表示/非表示）  -->
-<div id="overlay"></div>
-<div id="flash"></div>
 
-<div id="pause-menu">
-    <h2>PAUSE</h2>
-    <form id="form" action="start" method="post">
-		<label><input type="radio" name="pause" value="continue" checked>つづける</label><br>
-		<label><input type="radio" name="pause" value="<%= level %>">やりなおす</label><br>
-		<label><input type="radio" name="pause"value="back">タイトルへ戻る</label><br>
-	</form>
-</div>
+
+
+
 <%-- 回答結果がある場合 --%>
 <% if (result != null) { %>
 
@@ -178,48 +181,69 @@ body {
 
 <% } else { %>
 
+<div id="overlay"></div>
+<div id="flash"></div>
+<!-- ▼ ポーズ画面 -->
+<div id="pause-menu">
+    <h2>PAUSE</h2>
+    <form id="form" action="start" method="post">
+		<label><input type="radio" name="pause" value="continue" checked>つづける</label><br>
+		<label><input type="radio" name="pause" value="<%= level %>">やりなおす</label><br>
+		<label><input type="radio" name="pause"value="back">タイトルへ戻る</label><br>
+	</form>
+</div>
+<!-- ▼ ゲームクリア画面 -->
+<div id="game-clear">
+    <p>ゲームクリア！</p>
+    <a href="start">タイトルへ</a>
+</div>
+
+<!-- ▼ ゲームオーバー画面 -->
+<div id="game-over">
+    <p>ゲームオーバー</p>
+    <a href="start">タイトルへ</a>
+</div>
+<!-- ▼ ゲーム画面 -->
+<div id="game-ui">
 	<p> 
 		<span id="time1" style="font-size: 100px;"></span>
         <span id="time2" style="font-size: 80px;"></span>
         <span id="time3" style="font-size: 80px;"></span>
 	</p>
 
-    <h2> <%= index + 1 %>  / 7</h2>
-    
-    <p id=""></p>
+    <p id="countQ"></p>
 
-    <p id="question"><%= q.getKanji() %></p>
-
- 	<form action="game" method="post" id="textp">
+    <p id="question"></p>
     	<div id="input-wrapper">
     	<span id="underline"></span>
     	<input  type="text"  id="txt" name="answer" autocomplete="off" 
     	autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="latin" autofocus>
   		</div>
-  		<input type="hidden" name="size" id="size">
-    	<input type="hidden" name="time" id="time">
-	</form>
+</div>
+
+
+    	
     <script>
+    const questions = [];
+
+    <% for (Question q : list) { %>
+        questions.push({
+            id: <%= q.getId() %>,
+            kanji: "<%= q.getKanji() %>",
+            yomi: "<%= q.getYomi() %>",
+            level: "<%= q.getLevel() %>",
+            kai: "<%= q.getKai() %>"
+        });
+    <% } %>
     
-    document.addEventListener("DOMContentLoaded", function() {
-    const txt=document.getElementById("txt");
+    const txt = document.getElementById("txt");
     const overlay = document.getElementById("overlay");
     const menu = document.getElementById("pause-menu");
     const question = document.getElementById("question");
-    const textp = document.getElementById("textp");
-
-    let size = <%= size %>; //問題の初期のフォントサイズ
-
-    let fontsize = document.getElementById("size");
-    let time = document.getElementById("time");
 
     let time1 = document.getElementById("time1");
     let time2 = document.getElementById("time2");
     let time3 = document.getElementById("time3");
-
-    let t1 = <%= time0 %>;
-    let t2 = 10;
-    let t3 = 10;
 
     let timer1 = null;
     let timer2 = null;
@@ -228,23 +252,37 @@ body {
     let pause = false;
     let isRunning = false;
 
+    let i = 0;
+
+    let player = 3;
+
+    document.addEventListener("DOMContentLoaded", function Question() {
+
+
+    let size = 140; //問題の初期のフォントサイズ
+
+    let t1 = 17;
+    let t2 = 10;
+    let t3 = 10;
+
+    question.textContent = questions[i].kanji;
     function startTimer() {
         if (isRunning) return;
+        isRunning = true;
 
         time1.textContent = t1;
         time2.textContent = "." + t2;
         time3.textContent = t3;
 
-        isRunning = true;
-
         timer1 = setInterval(function () {
-             if (t1 <= 1) {
+             if (t1 <= 0) {
             	clearInterval(timer1);
                 timer1 = null;
                 new Audio("se/ﾋﾟﾁｭｰﾝ.mp3").play();
                 question.style.display = 'none';
-                textp.style.display = 'none';
+                txt.style.display = '';
                 flash3Times();
+                player--;
             }else if(t1 <= 6){
             	time1.style.color = '#ff0000';
                 time2.style.color = '#ff0000';
@@ -258,9 +296,18 @@ body {
                 time2.style.color = '#ff4d00';
                 time3.style.color = '#ff4d00';
                 new Audio("se/タイマー音.mp3").play();
+            }else{
+            	time1.style.color = '#ffffff';
+                time2.style.color = '#ffffff';
+                time3.style.color = '#ffffff';
             }
             t1--;
-            time1.textContent = t1;
+            if(t1 <= 0){
+            	time1.textContent = 0;
+            }else{
+				time1.textContent = t1;
+                }
+            
         }, 1000);
 
         timer2 = setInterval(function () {
@@ -293,17 +340,17 @@ body {
     }
 
     function stopTimer() {
-        if (!isRunning) return;
+    	isRunning = false;
         clearInterval(timer1);
         clearInterval(timer2);
         clearInterval(timer3);
-        isRunning = false;
-        time.value = t1;
-        fontsize.value = size;
+        timer1 = null;
+        timer2 = null;
+        timer3 = null;
     }
 
 	function closePauseMenu() {
-	    document.getElementById("overlay").style.display = "none";
+	    document.getElementById("overlay").style.display = "";
 	    document.getElementById("pause-menu").style.display = "none";
 
 	    // ゲーム画面の入力欄にフォーカスを戻す
@@ -312,7 +359,7 @@ body {
 	    isPauseOpen = false;
 	}
 
-	txt.addEventListener("input", function() {
+	document.addEventListener("input", function() {
 	    const text = this.value;
 	    const temp = document.createElement("span");
 
@@ -347,7 +394,6 @@ body {
 	    	new Audio("se/ポーズ.mp3").play();
 
 	        stopTimer();
-	        pause = true;
 
 	        // 表示
 	        overlay.style.display = "block";
@@ -401,27 +447,45 @@ body {
 	    }else if(e.key === "Enter"){
 	    	new Audio("se/決定.mp3").play();
 	    	e.preventDefault(); 
-	    	stopTimer();
-	        setTimeout(() => {
-	        	textp.submit();
-	        }, 200);
+	    	
+            if (txt.value === questions[i].yomi) {
+                if(i >= 6){
+                	stopTimer();
+                	 document.getElementById("game-ui").style.display = "";
+                	 document.getElementById("game-clear").style.display = "block";
+                	return;
+               }else {
+                stopTimer();
+                txt.value = "";
+                i++;
+                Question(); 
+               }
+                
+            }else if(t1 <= 0){
+                
+                if(player <= 1){
+                	stopTimer();
+                	
+                	    document.getElementById("game-ui").style.display = "";
+                	    document.getElementById("game-over").style.display = "block";
+                	
+                	return;
+                }else{
+               	 stopTimer();
+                 txt.value = "";
+                 i++;
+                 Question(); 
+                }
+            }
     	}else if(e.key === "Backspace"){
     		new Audio("se/戻る.mp3").play();
        	}else{
        		new Audio("se/カーソル移動.mp3").play();
         }
 	});
-        // ====== JSP変数で result の状態を判定 ======
-        const isResult =  (result != null) ? "true" : "false" ;
-
-        // ====== ②結果画面：Enter でリンクを実行 ======
-        if (isResult) {
-            const nextLink = document.querySelector("a"); // 結果画面のリンクは必ず1つ
-
-        }
     });
-
     </script>
+    <% } %>
 </body>
 </html>
-<% } %>
+
