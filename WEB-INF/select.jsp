@@ -12,7 +12,7 @@
     }
 body {
 	text-align: center;
-	background-image: url("images/haikei2.gif");
+	background-image: url("images/siro2.png");
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center;
@@ -190,6 +190,10 @@ document.addEventListener("DOMContentLoaded", function(){
 		if(e.key === "Enter"){
 			new Audio("se/決定.mp3").play();
 			document.getElementById("form").submit();
+		}
+		if (e.key === "Escape") {
+			e.preventDefault();
+			location.href = "settings";
 		}
 	});
 });
