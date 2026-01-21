@@ -23,16 +23,16 @@ public class RestartServlet extends HttpServlet {
 
 		// レベルはセッションから取得
 		String level = (String) session.getAttribute("level");
+	    int player = (Integer) session.getAttribute("player");
+	    int time = (Integer) session.getAttribute("time");
 
 		QuestionDAO dao = new QuestionDAO();
 		ArrayList<Question> questions = dao.findRandomByLevel(level);
 
 		// 初期化
 		session.setAttribute("questions", questions);
-		session.setAttribute("index", 0);
-		//session.setAttribute("player", 3);
-		//session.setAttribute("time", 17);
-		//session.setAttribute("size", 140);
+		session.setAttribute("player", player);
+		session.setAttribute("time", time);
 
 		request.getRequestDispatcher("/WEB-INF/game.jsp")
 		       .forward(request, response);
