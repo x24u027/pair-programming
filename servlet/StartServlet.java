@@ -14,34 +14,53 @@ import jakarta.servlet.http.HttpSession;
 import dao.QuestionDAO;
 import model.Question;
 
-/**
- * Servlet implementation class start
- */
 @WebServlet("/start")
 public class StartServlet extends HttpServlet {
+
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.getRequestDispatcher("/WEB-INF/select.jsp").forward(request, response);
 
+		request.getRequestDispatcher("/WEB-INF/select.jsp")
+		       .forward(request, response);
 	}
 
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String level = request.getParameter("level");
+		String level = request.getParameter("pause");
 
+		HttpSession session = request.getSession();
+
+		/* ===== 設定値（未設定ならデフォルト） ===== */
+		int time = session.getAttribute("time") != null
+				? (Integer) session.getAttribute("time")
+				: 17;
+
+		int player = session.getAttribute("player") != null
+				? (Integer) session.getAttribute("player")
+				: 3;
+
+		int size = session.getAttribute("size") != null
+				? (Integer) session.getAttribute("size")
+				: 140;
+
+		/* ===== 問題取得 ===== */
 		QuestionDAO dao = new QuestionDAO();
 		ArrayList<Question> questions = dao.findRandomByLevel(level);
 
-		HttpSession session = request.getSession();
+		/* ===== セッション保存 ===== */
 		session.setAttribute("questions", questions);
-		session.setAttribute("index", 0); 
+		session.setAttribute("index", 0);
 		session.setAttribute("level", level);
-		session.setAttribute("time", 17);
-		session.setAttribute("size", 140);
-		session.setAttribute("player", 3);
-		//response.sendRedirect("game");
-		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/game.jsp");
+		session.setAttribute("time", time);
+		session.setAttribute("player", player);
+		session.setAttribute("size", size);
+
+		/* ===== ゲーム画面へ ===== */
+		RequestDispatcher rd =
+				request.getRequestDispatcher("/WEB-INF/game.jsp");
 		rd.forward(request, response);
 	}
 }
