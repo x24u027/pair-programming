@@ -41,6 +41,10 @@ public class StartServlet extends HttpServlet {
 		int player = session.getAttribute("player") != null
 				? (Integer) session.getAttribute("player")
 				: 3;
+		
+		int cntQ = session.getAttribute("cntQ") != null
+				? (Integer) session.getAttribute("cntQ")
+				: 5;
 
 		/* ===== 問題取得 ===== */
 		QuestionDAO dao = new QuestionDAO();
@@ -51,6 +55,7 @@ public class StartServlet extends HttpServlet {
 		session.setAttribute("level", level);
 		session.setAttribute("time", time);
 		session.setAttribute("player", player);
+		session.setAttribute("cntQ", cntQ);
 
 		/* ===== ゲーム画面へ ===== */
 		RequestDispatcher rd =
