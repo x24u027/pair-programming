@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>レベル選択</title>
+<title>セレクト画面</title>
 
 <style>
 #guide{

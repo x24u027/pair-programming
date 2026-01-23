@@ -1,4 +1,3 @@
-
 <%@ page import="java.util.*" %>
 <%@ page import="model.Question" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -6,15 +5,16 @@
     ArrayList<Question> list = (ArrayList<Question>) session.getAttribute("questions");
     int player = (Integer) session.getAttribute("player");
     int time0 = (Integer) session.getAttribute("time");
+    int cntQ = (Integer) session.getAttribute("cntQ");
     String level = (String) session.getAttribute("level");
 %>
-
+ 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>レベル選択</title>
-
+<title>ゲーム画面</title>
+ 
 <style>
 /* ===== 背景動画 ===== */
 #bg-video {
@@ -26,6 +26,7 @@
     object-fit: cover;
     z-index: -1;
 }
+
 body {
 	text-align: center;
 }
@@ -40,7 +41,7 @@ body {
 	background: rgba(0, 0, 0, 0.6);
 	z-index: 100;
 }
-
+ 
 /* ポーズメニュー本体 */
 #pause-menu {
 	display: none;
@@ -56,9 +57,21 @@ body {
 	text-align: center;
 	width: 300px;
 }
-
+ 
 /* ゲームクリアorゲームオーバー画面 */
-#game-clear,#game-over {
+#game-clear {
+    display:none;
+    text-align:center;
+    font-size:40px;
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+     line-height: 1.1;
+   
+}
+ 
+#game-over{
     display:none;
     text-align:center;
     font-size:40px;
@@ -68,6 +81,22 @@ body {
     transform:translate(-50%,-50%);
 }
 
+#Explanation {
+	color: #ffffff;
+	display: none;
+	position: fixed;
+	top: 70%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: black;
+	padding: 30px 40px;
+	border-radius: 10px;
+	font-size: 40px;
+	z-index: 101;
+	text-align: center;
+	width: 300px;
+}
+ 
 #question {
 	white-space: nowrap;
     position: absolute;
@@ -82,7 +111,7 @@ body {
 	-webkit-text-stroke-color: black;
     font-family: "MS PMincho";
 }
-
+ 
 #time1,#time2,#time3{
 	font-weight: bold;
 	color: #ffffff;
@@ -91,6 +120,41 @@ body {
 	font-family:"ＭＳ 明朝","MS Mincho";
 }
 
+#countQ{
+	font-size: 40px;
+	margin: 0px;
+	font-family:"ＭＳ 明朝","MS Mincho";
+}
+
+#zanki {
+	position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 8px 12px;               /* 余白 */
+    background:#75d400c6;
+    border: 4px solid #DAA520;  
+    border-radius: 8px;              /* 角を丸く */
+    z-index: 9999;   
+}
+
+#kake {
+	font-size: 50px;
+	font-weight: bold;
+	color: #ffffff;
+}
+
+#zan {
+	font-size: 60px;
+	font-weight: bold;
+	color: #c40000;
+  	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: white;
+}
+ 
 /* 入力全体の位置（下部固定） */
 #input-wrapper {
 	text-align: center;
@@ -102,18 +166,18 @@ body {
 	height: 50px;
 	line-height: 50px;
 }
-
+ 
 #underline {
     position: absolute;
     bottom: 0;
     left: 50%;               
-    transform: translateX(-50%); 
+    transform: translateX(-50%);
     height: 2px;
     background: #000;
     width: 0;                
     transition: width 0.05s linear;
 }
-
+ 
 /* 本物の input は透明にして文字だけ表示 */
 #txt {
 	text-align: center;
@@ -124,14 +188,14 @@ body {
 	position: relative;
 	z-index: 2;
 }
-
+ 
 #flash {
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: #ff0000; 
+	background-color: #ff0000;
 	pointer-events: none;
 	opacity: 0;
 	z-index: 9999;
@@ -147,8 +211,62 @@ body {
 	83%  { opacity: 1; }
 	100% { opacity: 0; }
 }
+ 
+#clear {
+  color: yellow;          /* ← これを有効にする */
+  font-size: 150px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  font-family: 'Arial Black', Impact, sans-serif;
+ 
+ 
+  /* 縁取りは残してOK */
+  -webkit-text-stroke: 6px red;
+ 
+  text-shadow:
+    2px 2px 0 #ffffff,
+    -2px -2px 0 #ffffff,
+    4px 4px 6px rgba(0,0,0,0.6);
+ 
+  transform: skewX(-12deg) rotate(-2deg);
+  display: inline-block;
+}
+ 
+.clear-shift {
+  margin-left: 50px;   /* ← ここで右にずらす量を調整 */
+  display: inline-block;
+}
+#game-clear a {
+  margin-top: -20px;
+}
+ 
+ 
+#over {
+  color: red;
+  font-size: 150px;
+  font-weight: 500;
+  letter-spacing: 6px;
+  font-family: 'Arial Black', Impact, sans-serif;
+ 
+  /* 外枠を赤 */
+  -webkit-text-stroke: 6px red;
+ 
+  /* ★ 横一列固定 */
+  white-space: nowrap;
+ 
+  text-shadow:
+    2px 2px 0 #ffffff,
+    -2px -2px 0 #ffffff,
+    4px 4px 6px rgba(0,0,0,0.6);
+ 
+ 
+  display: inline-block;
+}
+ 
+ 
+ 
 </style>
-
+ 
 </head>
 <body>
 <!-- ===== 背景動画 ===== -->
@@ -165,12 +283,12 @@ body {
             <input type="radio" name="pause" value="continue" checked>
             つづける
         </label><br>
-
+ 
         <label>
             <input type="radio" name="pause" value="restart">
             やりなおす
         </label><br>
-
+ 
         <label>
             <input type="radio" name="pause" value="back">
             タイトルへ戻る
@@ -179,14 +297,22 @@ body {
 </div>
 <!-- ▼ ゲームクリア画面 -->
 <div id="game-clear">
-    <p>ゲームクリア！</p>
+    <p id="clear">GAME <span class="clear-shift">CLEAR</span></p>
+    
     <a href="start">タイトルへ</a>
 </div>
-
+ 
 <!-- ▼ ゲームオーバー画面 -->
 <div id="game-over">
-    <p>ゲームオーバー</p>
+    <p id="over">GAME OVER</p>
     <a href="start">タイトルへ</a>
+</div>
+<!-- ▼ 解説画面 -->
+<div id="Explanation">
+    <ruby>
+    <p id="kan"></p>
+    <rt id="yomi"></rt>
+    </ruby>
 </div>
 <!-- ▼ ゲーム画面 -->
 <div id="game-ui">
@@ -199,10 +325,17 @@ body {
     <p id="countQ"></p>
 
     <p id="question"></p>
+    
+    <div id ="zanki">
+        <img src="images/残機.png">
+        <span id="kake">×</span>
+        <span id="zan"></span>
+    </div>
     	<div id="input-wrapper">
-    	<span id="underline"></span>
+    	
     	<input  type="text"  id="txt" name="answer" autocomplete="off" 
     	autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="latin" autofocus>
+    	<span id="underline"></span>
   		</div>
 </div>
 
@@ -222,10 +355,15 @@ body {
     <% } %>
     
     const txt = document.getElementById("txt");
+    const underline = document.getElementById("underline");
+    const kan = document.getElementById("kan");
+    const yomi = document.getElementById("yomi");
     const overlay = document.getElementById("overlay");
     const menu = document.getElementById("pause-menu");
     const question = document.getElementById("question");
+    const zan = document.getElementById("zan");
     const time = document.getElementById("time");
+    const video = document.getElementById("bg-video");
 
     let time1 = document.getElementById("time1");
     let time2 = document.getElementById("time2");
@@ -238,11 +376,13 @@ body {
     let pause = false;
     let isRunning = false;
 
+    let maxQ = <%= cntQ %>;
     let i = 0;
+    let c = 1;
 
     let player = <%= player %>;
 
-    let size = 140; //問題の初期のフォントサイズ
+    let size = 140; 
 
     let t1 = <%= time0 %>;
     let t2 = 10;
@@ -252,13 +392,17 @@ body {
 
     question.textContent = questions[i].kanji;
 
+    zan.textContent = player;
+
+    document.getElementById("countQ").textContent = c + " / " + maxQ ;
+
     document.addEventListener("DOMContentLoaded", function Question() {
 
     function startTimer() {
         if (isRunning) return;
         isRunning = true;
 
-        document.getElementById("countQ").textContent = i + 1;
+        
         time1.textContent = t1;
         time2.textContent = "." + t2;
         time3.textContent = t3;
@@ -271,7 +415,14 @@ body {
                 question.style.display = 'none';
                 txt.blur();
                 flash3Times();
+                video.pause();
                 player--;
+                zan.textContent = player;
+                setTimeout(() => {
+                	Explanation.style.display = 'block';
+                	kan.textContent = questions[i].kanji;
+                	yomi.textContent = questions[i].yomi;
+                }, 2000); 
             }else if(t1 <= 6){
             	time1.style.color = '#ff0000';
                 time2.style.color = '#ff0000';
@@ -348,24 +499,22 @@ body {
 	    isPauseOpen = false;
 	}
 
-<!--	document.addEventListener("input", function() {-->
-<!--	    const text = this.value;-->
-<!--	    const temp = document.createElement("span");-->
+    txt.addEventListener("input", function() {
+        const text = this.value;
+        const temp = document.createElement("span");
 
-<!--	    // 幅計測用の文字スタイル-->
-<!--	    temp.style.fontSize = "50px";-->
-<!--	    temp.style.visibility = "hidden";-->
-<!--	    temp.style.position = "absolute";-->
-<!--	    temp.style.whiteSpace = "pre";-->
+        temp.style.fontSize = "50px";
+        temp.style.visibility = "hidden";
+        temp.style.position = "absolute";
+        temp.style.whiteSpace = "pre";
 
-<!--	    temp.textContent = text;-->
-<!--	    document.body.appendChild(temp);-->
+        temp.textContent = text;
+        document.body.appendChild(temp);
 
-<!--	    // 下線を文字の幅に合わせて伸ばす-->
-<!--	    document.getElementById("underline").style.width = temp.offsetWidth * 0.8  + "px";-->
+        underline.style.width = temp.offsetWidth * 0.8 + "px";
 
-<!--	    document.body.removeChild(temp);-->
-<!--	});-->
+        document.body.removeChild(temp);
+    });
 
     function flash3Times() {
         const f = document.getElementById('flash');
@@ -383,27 +532,42 @@ body {
 		    e.preventDefault();
 
 		    if (txt.value === questions[i].yomi) {
-		        if (i >= 6) {
-		        	clearInterval(timer1);
+		        if (c >= maxQ ) {
+			        clearInterval(timer1);
 		            clearInterval(timer2);
-		            clearInterval(timer3);
-		            time.style.display = 'none';
-		            question.style.display = 'none';
-		            txt.style.display = 'none';
+		            clearInterval(timer3);	            
+		        		new Audio("se/正解音.mp3").play();
+			        	time.style.display = 'none';
+		            	question.style.display = 'none';
+		            	txt.style.display = 'none';
+			            underline.style.width = 0 + "px";
+		        	setTimeout(() => {
+		            video.pause();
 		            document.getElementById("game-clear").style.display = "block";
 		            return;
+	                }, 1000);
+		        	
 		        } else {
-		            stopTimer();
-		            txt.value = "";
-		            i++;
+		        	stopTimer();
+			        txt.value = "";
+		            underline.style.width = 0 + "px";
+		            question.style.display = 'none';
+		        		new Audio("se/正解音.mp3").play();
+		        		c++;
+		        	setTimeout(() => {
+	                i++;
+	                
 		            size = 140;
-
 		            t1 = <%= time0 %>;
 		            t2 = 10;
 		            t3 = 10;
-
+		            document.getElementById("countQ").textContent = c + " / " + maxQ ;
+		            Explanation.style.display = 'none';
+		            time.style.display = 'block';
+		            question.style.display = 'block';
 		            question.textContent = questions[i].kanji;
 		            startTimer();
+	                }, 1000);
 		        }
 
 		    } else if (t1 <= 0) {
@@ -415,15 +579,20 @@ body {
 		            time.style.display = 'none';
 		            question.style.display = 'none';
 		            txt.style.display = 'none';
+		            underline.style.width = 0 + "px";
+		            Explanation.style.display = 'none';
 		            document.getElementById("game-over").style.display = "block";
 
 		            return;
 		        } else {
 
+		        	Explanation.style.display = 'none';
 		            question.style.display = 'block';
 		            txt.focus();
 		            stopTimer();
+		            video.play();
 		            txt.value = "";
+		            underline.style.width = 0 + "px";
 		            i++;
 		            size = 140;
 
@@ -434,7 +603,11 @@ body {
 		            question.textContent = questions[i].kanji;
 		            startTimer();
 		        }
-		    }
+		    }else{
+		    	setTimeout(() => {
+                	new Audio("se/誤.wav").play();
+                }, 300); 
+			    }
 		} else if (e.key === "Backspace" && isPauseOpen === false) {
 		    new Audio("se/戻る.mp3").play();
 		}
@@ -443,6 +616,8 @@ body {
 
 		    stopTimer();
 		    isPauseOpen = true;
+
+		    Explanation.style.display = 'none';
 
 		    // 表示
 		    overlay.style.display = "block";
