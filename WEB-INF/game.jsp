@@ -572,8 +572,12 @@
                             question.style.display = 'none';
                             txt.style.display = 'none';
                             underline.style.width = 0 + "px";
+                            Explanation.style.display = 'block';
+                            kan.textContent = questions[i].kanji;
+                            yomi.textContent = questions[i].yomi;
                             setTimeout(() => {
                                 video.pause();
+                                Explanation.style.display = 'none';
                                 Clear.style.display = "block";
                                 goal = true;
                                 return;
@@ -585,6 +589,9 @@
                             underline.style.width = 0 + "px";
                             question.style.display = 'none';
                             new Audio("se/正解音.mp3").play();
+                            Explanation.style.display = 'block';
+                            kan.textContent = questions[i].kanji;
+                            yomi.textContent = questions[i].yomi;
                             c++;
                             setTimeout(() => {
                                 i++;

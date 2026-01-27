@@ -33,7 +33,7 @@
 
         /* ---------- タイトル ---------- */
         h1 {
-            font-size: 80px;
+            font-size: 90px;
             color: yellow;
             -webkit-text-stroke: 3px #ff2b7a;
             text-shadow:
@@ -50,7 +50,7 @@
 
         /* ---------- レベル文字 ---------- */
         #form {
-            font-size: 50px;
+            font-size: 60px;
             font-family: "Impact", "Arial Black", sans-serif;
             color: #ffffff;
             -webkit-text-stroke: 2px #ff2b7a;
@@ -170,9 +170,9 @@
 
             function updateGuide(index) {
                 if (index === 0) {
-                    guide.textContent = "ゲームを初めてプレイする方向け";
+                    guide.textContent = "ゲームを初めてプレイする人向け";
                 } else if (index === 1) {
-                    guide.textContent = "検定３級合格を目指している方向け";
+                    guide.textContent = "検定３級合格を目指している人向け";
                 } else if (index === 2) {
                     guide.textContent = "ちょっとおかしな人向け";
                 } else if (index === 3) {
@@ -218,7 +218,7 @@
 <body>
     <h1 id=setumei>Level Select</h1>
     <h3 id=setumei>↑↓ or ←→ で選択 / Enterで決定</h3>
-    <h2 id="guide">ゲームを初めてプレイする方向け</h2>
+    <h2 id="guide">ゲームを初めてプレイする人向け</h2>
     <form id="form" action="start" method="post">
         <label class="es">
             <input type="radio" name="level" value="easy" checked> -Easy-
