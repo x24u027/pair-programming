@@ -1,3 +1,4 @@
+
 <%@ page import="java.util.*" %>
 <%@ page import="model.Question" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -59,6 +60,8 @@
             text-align: center;
             width: 300px;
         }
+
+
 
         /* ゲームクリアorゲームオーバー画面 */
         #game-clear {
@@ -291,6 +294,34 @@
 
             display: inline-block;
         }
+
+        /* ラジオボタンを消す */
+        #pause-menu input[type="radio"] {
+            display: none;
+        }
+
+
+        /* ポーズメニューのラベル共通 */
+        #pause-menu label {
+            display: block;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        /* 選択中の項目 */
+        #pause-menu input[type="radio"]:checked+label,
+        #pause-menu label:has(input[type="radio"]:checked) {
+            background: #ffbb00;
+            color: #000;
+            font-weight: bold;
+        }
+
+        #pause-menu label:has(input[type="radio"]:checked)::before {
+            content: "▶ ";
+            color: black;
+        }
     </style>
 
 </head>
@@ -309,7 +340,8 @@
             <label>
                 <input type="radio" name="pause" value="continue" checked>
                 つづける
-            </label><br>
+            </label>
+            <br>
 
             <label>
                 <input type="radio" name="pause" value="restart">
@@ -404,6 +436,7 @@
         let pause = false;
         let isRunning = false;
         let goal = false;
+        let R = false;
 
         let maxQ = <%= cntQ %>;
         let i = 0;
@@ -430,6 +463,7 @@
             function startTimer() {
                 if (isRunning) return;
                 isRunning = true;
+                R = true;
 
 
                 time1.textContent = t1;
@@ -440,6 +474,7 @@
                     if (t1 <= 0) {
                         clearInterval(timer1);
                         timer1 = null;
+                        R = false;
                         new Audio("se/ﾋﾟﾁｭｰﾝ.mp3").play();
                         question.style.display = 'none';
                         txt.blur();
@@ -609,7 +644,7 @@
                             }, 1000);
                         }
 
-                    } else if (t1 <= 0) {
+                    } else if (!timer1) {
 
                         if (player <= 0) {
                             clearInterval(timer1);
@@ -643,6 +678,8 @@
                             startTimer();
                         }
                     } else {
+                        underline.style.width = 0 + "px";
+                        txt.value = "";
                         setTimeout(() => {
                             new Audio("se/誤.wav").play();
                         }, 300);
@@ -693,7 +730,9 @@
                         new Audio("se/決定.mp3").play();
                         // ▼ ポーズ解除
                         closePauseMenu();
-                        startTimer();
+                        if (R) {
+                            startTimer();
+                            }
                         return;
 
                     }
